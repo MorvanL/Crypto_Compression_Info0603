@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Compression : TP N°1</title></head>
+<body>
+<h1>TPs de compression</h1>
+<p>On va compresser des données constitués uniquement de symboles de A à H (soit 8 caractères).&nbsp;</p>
+<p>En terme de programmation:</p>
+<ul>
+  <li>le langage de programmation utilisé sera le C++. L'utilisation des fonctions C standard reste autorisé (memcpy, sprintf, ...).</li>
+  <li>chaque
+méthode de codage/décodage devra être implémentée dans une classe
+particulière (i.e. une classe CRLE, CTF, CTV, CHuffman, CLZH).</li>
+  <li>toutes ces classes dériveront d'une classe mère qui implémente les méthodes virtuelles encode et decode.</li>
+  <li>tous
+les résultats des compressions seront stockés dans des fichiers
+partageant tous le même format, à savoir une entête contenant la taille
+du fichier, le nombre de bits valides, la table des symboles et la
+table des codes, suivie des données écrits en binaire.</li>
+  <br />
+</ul><h2>A) Codage binaire</h2>Dans un premier temps, on veut créer une
+classe qui permet de lire et d'écrire des flux binaires. A savoir, on
+veut écrire une suite de paquets de bits B1, B2, ..., Bn tel que le
+bloc B résultant soit la concaténation de l'ensemble des paquets
+(B=B1B2...Bn et |B|=|B1|+...+|Bn|).<br />Pour réaliser cela, il faut
+tout d'abord créer un type BitBlock qui va contenir un espace de
+stockage (storage = unsigned char pour l'exemple) ainsi qu'un champs
+indiquant le nombre de bits valides sur cet espace de stockage.<br />Par exemple, le paquet de 3 bits 110 sera stocké comme (storage,validbits)&nbsp; = (00000110, 3).<br />Le
+résultat de la concaténation de paquets de bits sera stocké dans un
+tableau suivant le même principe (storage = unsigned char*, validbits).<br />Par exemple, la concaténation de 110, 1110 et 00111 devra donner ( &nbsp;11110110 00000011, 12 ).&nbsp;<br /><br />Une
+implémentation de ces fonctionnalités est fournie dans l'archive
+disponible ici. Vous pouvez l'utiliser telle quelle, ou vous en
+inspirer afin de réaliser vos propres classes.<br /><h2>B) Codage à taille fixe</h2>
+<ol><li>Les fichiers de données n'utilisant que 8 caractères chacun étant codé sur 8 bits,
+écrire une fonction qui utilise un code à taille fixe de 3 bits pour
+les recoder.</li><li>Ecrire la fonction de décodage.</li></ol>
+<h2>C) Codage à taille variable</h2>
+<ol><li>Ecrire une fonction qui calcule la fréquence des caractères d'un texte.</li><li>Choisir
+une longueur de code en accord avec la fréquence des caractères
+(l'implémentation de Huffman n'est pas demandée, par exemple 1 pour le
+symbole le plus fréquent, 2 pour le suivant, 3 pour celui d'après, ...).</li><li>Implémenter le codage à taille variable.</li><li>Implémenter le décodage à taille variable du code précédent.</li><li>Tester la compression sur les différents fichiers de données.</li></ol><h2>D) Codage RLE</h2>On
+veut maintenant implémenter le codage RLE en utilisant comme symbole
+qui marque le début de run le symbole le moins fréquent (noté X). X
+sera codé X0, un run de n A sera codé XpA (où p=n+3). Un run ne sera
+codé que s'il a une longueur strictement supérieure à 3.<br /><ol><li>Implémenter le codage RLE.</li><li>Implémenter le décodage RLE.</li><li>Tester la compression sur les différents fichiers de données.</li></ol><h2>E) Codage de Huffman</h2>
+<ol><li>Implémenter le codage/décodage avec un code de Huffman.</li><li>Tester la compression sur les différents fichiers de données.</li><li>Comparer les performances avec celles obtenues à la question précédente.</li></ol>
+<h2>F) Codage par Dictionnaire LZW</h2>
+<ol><li>Ecrire une fonction qui implémente la compression/décompression par dictionnaire avec le LZW.</li><li>Tester la compression sur les différents fichiers de données.</li><li>Comparer les performances avec celles obtenues à la question précédente.</li></ol><p><span style="font-size: 10px;">Année universitaire 2014-2015 : version du 3 février 2015.</span></p>
+</body></html>

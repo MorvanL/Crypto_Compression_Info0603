@@ -1,0 +1,70 @@
+#include <stdint.h>
+#include <cstdio>
+#include <cstring>
+
+namespace CryptoTools {
+	inline bool CharInSet(char c, const uint8_t *set) {
+		uint8_t &s = *(uint8_t*)&c;
+		int i = 0;
+		while (set[i] != 0)
+		if (s == set[i++]) return true;
+		return false;
+	}
+
+	// codage CP1252 (indépendant du codage du source)
+	namespace Accent {
+		static const uint8_t a[] = { 0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0x00 };  //  "àÀâÂäåáãÄÅÁÃ"
+		static const uint8_t ae[] = { 0xc6, 0xe6, 0x00 };													// "æÆ"
+		static const uint8_t c[] = { 0xc7, 0xe7, 0x00 };													// "çÇ"
+		static const uint8_t e[] = { 0xc8, 0xc9, 0xca, 0xcb, 0xe8, 0xe9, 0xea, 0xeb, 0x00 };				// "ëËèÈéÉêÊ"
+		static const uint8_t i[] = { 0xcc, 0xcd, 0xce, 0xcf, 0xec, 0xed, 0xee, 0xef };					//  "ïîÏÎìíÍ"
+		static const uint8_t n[] = { 0xd1, 0xf1, 0x00 };													//  "ñÑ"
+		static const uint8_t o[] = { 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0x00 };  //  "ôÔöóòõÖÓÒÕ"
+		static const uint8_t u[] = { 0xd9, 0xda, 0xdb, 0xdc, 0xf9, 0xfa, 0xfb, 0xfc, 0x00 };				//  "ûÛüúÜÚ"
+		static const uint8_t y[] = { 0xdd, 0xfd, 0xff, 0x00 };											//  "ÿýÝ"
+		static const uint8_t oe[] = { 0x8c, 0x9c, 0x00 };		// "Œ,œ"
+	}
+}
+
+int main(int argc, char* argv[]) {
+	int j = 0;
+	const size_t sz = 512;
+	char msg[sz];
+	int cpt = 0;
+	FILE *ptf = fopen("Data/LaBoetieServitudeVolontaire.txt", "rb");
+	fread(msg, sz, sizeof(char), ptf);
+	fclose(ptf);
+
+	for (int i = 0; i < sz; i++) {
+		if (('A' <= msg[i]) && (msg[i] <= 'Z')) msg[j++] = msg[i];
+		else if (('a' <= msg[i]) && (msg[i] <= 'z')) msg[j++] = msg[i] - 'a' + 'A';
+		if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::e)) msg[i - cpt] = 'E';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::a)) msg[j++] = 'A';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::c)) msg[j++] = 'C';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::i)) msg[j++] = 'I';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::n)) msg[j++] = 'N';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::o)) msg[j++] = 'O';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::u)) msg[j++] = 'U';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::y)) msg[j++] = 'Y';
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::ae)) {msg[j++] = 'A'; msg[j++] = 'E'}
+		else if (CryptoTools::CharInSet(msg[i], CryptoTools::Accent::oe)) {msg[j++] = 'O'; msg[j++] = 'E'}
+	}
+	printf("%*s\n", (int)sz, msg);
+
+	return 0;
+}
+
+Discours de la servitude volontaire
+Étienne de La Boétie
+
+« Il n’est pas bon d’avoir plusieurs maîtres ; n’en ayons qu’un seul ; Qu’un seul soit le maître, qu’un seul soit le roi. »
+
+Voilà ce que déclara Ulysse en public, selon Homère.
+
+S’il eût dit seulement : « Il n’est pas bon d’avoir plusieurs maîtres », c’était suffisant. Mais au lieu d’en déduire que la domination de plusieurs ne peut être bonne, puisque la puissance d’un seul, dès qu’il prend ce titre de maître, est dure et déraisonnable, il ajoute au contraire : « N’ayons qu’un seul maître... »
+
+Il faut peut-être excuser Ulysse d’avoir tenu ce langage, qui lui servait alors pour apaiser la révolte de l’armée : je crois qu’il adaptait plutôt son discours aux circonstances qu’à la vérité.
+
+
+DISCOURSDELASERVITUDEVOLONTAIRETIENNEDELABOTIEILNESTPASBONDAVOIRPLUSIEURSMAiTRESNENAYONSQUUNSEULQUUNSEULSOITLEMAiTREQUUNSEULSOITLEROIVOILaCEQUEDCLARAULYSSEENPUBLICSELONHOMRESILEuTDITSEULEMENTILNESTPASBONDAVOIRPLUSIEURSMAiTRESCTAITSUFFISANTMAISAULIEUDENDDUIREQUELADOMINATIONDEPLUSIEURSNEPEUTTREBONNEPUISQUELAPUISSANCEDUNSEULDSQUILPRENDCETITREDEMAiTREESTDUREETDRAISONNABLEILAnation de plusieurs ne peut etre bonne, puisque la puissance d�un seul, des qu�il prend ce titre de ma�tre, est dure et deraisonnable, il a�
+

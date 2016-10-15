@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Cryptographie : TP N°2</title></head>
+
+<body>
+<h1>TPs de cryptographie</h1>
+<h2>A) Phase préparatoire</h2><p>L'ensemble des messages que nous crypterons seront sur un alphabet de
+taille 26 en ne conservant que les lettres de l'alphabet A ... Z. Deux textes vous sont fournis:&nbsp;</p><ul><ul><li><a href="https://sead.univ-reims.fr/main/document/showinframes.php?cidReq=CODAGE&amp;id=143">Le Discours de la servitude volontaire d'Étienne de La Boétie</a> (1549)</li><li><a href="https://sead.univ-reims.fr/main/document/showinframes.php?cidReq=CODAGE&amp;id=144">Le Traité sur la tolérance de Voltaire</a> (1763)</li></ul></ul>Même
+si ces textes ne vous servirons que pour disposer d'une base textuelle
+statistique, je vous en conseille la lecture (en particulier le
+premier), en particulier dans le contexte actuel.<ol><li>Ecrire un code qui charge l'un des deux textes dans un buffer mémoire.</li><li>Convertir&nbsp;tous les caractères accentués en caractères non accentués (voir l'archive <a href="https://sead.univ-reims.fr/main/document/showinframes.php?cidReq=CODAGE&amp;id=74">accent.zip</a>)</li><li>Effectuer une analyse fréquentielle du texte (à savoir calculer la fréquence des lettres de l'alphabet sur le texte).&nbsp;</li><li>Utiliser Gnuplot afin de visualiser l'histogramme obtenu.</li><li>Calculer l'index de Coïncidence de Friedman pour le français en utilisant les statistiques de ce texte.</li></ol>
+<h2>B) Cryptographie classique / Cryptanalyse d'un chiffre par décalage</h2><ol><li>Ecrire
+les fonctions de codage/décodage d'un chiffre monoalphabétique par
+décalage en codant quelques lignes d'une portion du texte.</li><li>Calculer l'indice de coïncidence
+de Friedman pour tous les décalages possibles, et rechercher celui qui
+donne l'indice maximum. Vérifier que l'indice maximum correspondant
+bien à la clef recherchée.</li></ol><h2>C) Cryptographie classique / Cryptanalyse d'un chiffre de Vigenère</h2><ol><li>Ecrire les fonctions de codage/décodage d'un chiffre de Vigenère
+en codant quelques lignes d'une portion du texte.</li><li>Ecrire une fonction qui implémente le test de Kasiski afin de déterminer la longueur de clef.</li><li>Trouver la clef en utilisant  l'indice de coïncidence de Friedman pour chaque caractère de la clef. </li></ol><h2>D) Chiffrement par bloc</h2>
+<p>On veut mettre en place un schéma de Feistel à 4 étages afin de coder des données par bloc de 32 bits. </p>
+<ol>
+  <li>Ecrire une fonction que transforme un message comme un nombre entier de blocs de 32 bits tel que:
+    <ol type="a">
+      <li type="a">chaque bloc de 32 bits est découpé en deux blocs de 16 bits</li>
+      <li type="a">chaque bloc de 16 bits est constitué de 3 caractères (de 5 bits) et d'un bit de parité (qui pourra éventuellement être mis à 0).</li>
+      <li>pour le dernier bloc, il pourra être complété avec des 0 si nécessaire. </li>
+    </ol>
+  </li>
+  <li>Ecrire
+une fonction S qui effectue des substitutions sur les mots de 4 bits
+d'un bloc de 16 bits. Pour simplifier, on utilisera un chiffre par
+décalage de kS caractères.</li>
+  <li>Ecrire une fonction P qui
+effectue une permutation bits à bits sur un bloc de 16 bits. Pour
+simplifier, on utilisera un shift circulaire à droite de kP bits.</li>
+  <li>On
+veut écrire un algorithme de diversification de la clef K de 32 bits.
+Les clefs kS et kP sont codées sur 4 bits. K s'écrit comme K = kS1 kP1
+kS2 kP2 kS3 kP3 ks4 kP4. Ecrire la fonction qui extrait l'ensemble des
+sous-clefs de clefs.</li>
+  <li>Ecrire la fonction d'étage f sur un
+bloc B de 16 bits comme f(B) = LSB0(P(S(B))) où LSB0 est la fonction
+qui met le bit de poids faible à 0.</li>
+  <li> Ecrire le schéma de Feistel à 4 étages qui chiffre un bloc de 32 bits en le découpant ([L,R]) en deux blocs de 16 bits.</li>
+  <li> Ecrire le schéma de Feistel réciproque à 4 étages qui déchiffre un bloc (voir la remarque ci-dessous).</li>
+  <li> Ecrire la fonction qui effectue le chiffrement ECB d'un message.</li>
+  <li> Ecrire la fonction qui effectue le déchiffrement ECB d'un message.</li>
+  <li> Même question avec un mode de chiffrement CFB (voir remarque ci-dessous).
+</li>
+  <li>Vérifier que la répartition des caractères s'applatit au fur et à mesure de l'augmentation du nombre des étages.</li>
+</ol>
+
+Remarques:
+<ul>
+<li>Pour le schéma de Feistel, il est conseillé d'effectuer une
+implémentation à 1 étage, puis à 2, etc ... afin de vérifier que le
+chiffrement/déchiffrement fonctionne correctement.</li>
+<li>Pour le chiffrement CFB, tester d'abord avec le
+chiffrement/déchiffrment d'un message à 2 blocs, avant d'augmenter le
+nombre de blocs.
+</li><li>Vous pouvez utilisez union afin d'interpréter un bloc 32
+bits, soit comme un entier 32 bits, soit comme deux entiers 16 bits,
+soit comme quatre entiers 8 bits.
+</li></ul>
+
+
+<h2>E) Cryptographie sur de grands entiers</h2><ol><li>Télécharger le <a href="https://sead.univ-reims.fr/main/document/document.php?cidReq=CODAGE&amp;id=67">bibliothèque NTL compatible avec la version de votre système sur webcampus</a>.
+Un petit exemple fonctionnel compilant avec la bibliothèque est inclus
+dans l'archive. L'ensemble des fonctions dont vous avez besoin se
+trouve dans le module ZZ. La documentation associée à ce module se
+trouve dans le fichier doc/ZZ.txt. Lorsque vous utilisez les fonctions
+aléatoires, pensez à initialiser la graine aléatoire (i.e. ne pas faire
+comme dans l'example).</li>
+  <li>Dans un premier temps, vous pouvez
+utiliser toutes les fonctions de ZZ. Ecrire le code qui permet de
+générer les clefs de RSA avec un nombre de bits au plus égal à 256.</li>
+  <li>Effectuer un chiffrement/déchiffrement RSA en chiffrant un nombre aléatoire.</li>
+  <li>Coder
+un message en texte simple (de moins de log(n) bits) en utilisant RSA.
+On pourra utiliser les fonctions ZZFromByte/ZZBytesFromZZ pour
+transformer facilement une chaîne de caractères en nombre, et
+vice-versa; et utiliser NumBytes pour connaitre le nombre de d'octets
+stockable dans un chiffre modulo n.</li>
+  <li>Prendre maintenant un texte plus long (au minimum 1024 bits) et chiffrer le message. Effectuer le chiffrement inverse.</li>
+  <li>Implémentez
+votre propre version du calcul du PGCD par Bezout. Vérifier que le
+résultat est correct, et l'utiliser pour inverser un entier premier
+avec n.</li>
+  <li>Implémentez votre propre version du test de primalité de Miller-Rabin.</li>
+  <li>Implémentez
+une version du l'algorithme p-1 de Pollard pour tenter de factoriser n.
+On commencera avec un n ayant peu de bits (par exemple 32) afin de
+vérifier le fonctionnement de l'algorithme, puis on augmentera
+progressivement le nombre de bits. Pour chaque multiple de 32 bits, on
+réalisera un fichier de log avec l'ensemble des expériences effectuées.</li>
+</ol>
+<p><span style="font-size: 10px;">Année universitaire 2014-2015 : version du 17 mars 2015.</span></p>
+</body></html>

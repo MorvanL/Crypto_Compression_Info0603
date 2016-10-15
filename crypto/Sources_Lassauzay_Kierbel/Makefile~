@@ -1,0 +1,13 @@
+# partie du makefile à modifier
+EXE=main_prof
+SRCS= main_prof.cpp
+LDLIBS= -lm
+# partie à ne pas toucher
+OBJS=$(SRCS:.cpp=.o)
+$(EXE): depend $(OBJS)
+	$(CXX) $(OBJS) $(LDLIBS) -o $@
+depend:
+	makedepend -Y $(SRCS) 2> /dev/null
+clean:
+	rm -f $(OBJS)
+# DO NOT DELETE
